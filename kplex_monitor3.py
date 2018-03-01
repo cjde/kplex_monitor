@@ -286,7 +286,7 @@ def main(argv):
 
             # check if the first two characters are not trash
             if ( line[0] == '$') and ( line[1].isalpha()) and ( line[2].isalpha()):
-               print line
+               # print line
                # What is this sentense
                instr =  NMEA.get(line[0:3])
                if instr != None:
