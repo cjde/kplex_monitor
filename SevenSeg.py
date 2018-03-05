@@ -76,7 +76,7 @@ def update_displays(SevSeg, d1, d2 ):
     :return:
     '''
     d3 = 0 
-    print "headings: ", d1, d2
+    # print "headings: ", d1, d2
 
     if SevSeg[0]:
         SevSeg[0].clear()
