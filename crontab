@@ -1,0 +1,2 @@
+@reboot /usr/sbin/kplex_monitor.d/boot_test.sh
+
