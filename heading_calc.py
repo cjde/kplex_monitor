@@ -72,6 +72,7 @@ class HEADING:
         self.radians = radians(self.angle)
         self.cos = cos(self.radians)
         self.sin = sin(self.radians)
+        print c
 
     def add_heading(self, h1):
         """

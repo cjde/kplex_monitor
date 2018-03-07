@@ -78,33 +78,39 @@ def update_displays(SevSeg, d1, d2 ):
     d3 = 0 
     # print "headings: ", d1, d2
 
-    if SevSeg[0]:
-        SevSeg[0].clear()
-        if d1 < 0 :
-            SevSeg[0].print_hex(0x8888)
-        else:
-            SevSeg[0].print_float(d1, decimal_digits=0, justify_right=True)
-        SevSeg[0].write_display()
+    try: 
+        st = True 
+        if SevSeg[0]:
+            SevSeg[0].clear()
+            if d1 < 0 :
+                SevSeg[0].print_hex(0x8888)
+            else:
+                SevSeg[0].print_float(d1, decimal_digits=0, justify_right=True)
+            SevSeg[0].write_display()
 
-    # when the other displays are available we can display them here 
-    # this is the display for the previous tack 
-    if SevSeg[1]:
-        SevSeg[1].clear()
-        if d2 < 0 :
-            SevSeg[1].print_hex(0x00)
-        else:
-            SevSeg[1].print_float(d2, decimal_digits=0, justify_right=True)
-        SevSeg[1].write_display()
+        # when the other displays are available we can display them here 
+        # this is the display for the previous tack 
+        if SevSeg[1]:
+            SevSeg[1].clear()
+            if d2 < 0 :
+                SevSeg[1].print_hex(0x00)
+            else:
+                SevSeg[1].print_float(d2, decimal_digits=0, justify_right=True)
+            SevSeg[1].write_display()
 
         
-    # if this display is connected then this would hold the tack from 2 tack agoa 
-    if SevSeg[2]:
-        SevSeg[2].clear()
-        if d3  < 0 :
-            SevSeg[2].print_hex(0x00)
-        else:
-            SevSeg[2].print_float(d3, decimal_digits=0, justify_right=True)
-        SevSeg[2].write_display()
+        # if this display is connected then this would hold the tack from 2 tack agoa 
+        if SevSeg[2]:
+            SevSeg[2].clear()
+            if d3  < 0 :
+                SevSeg[2].print_hex(0x00)
+            else:
+                SevSeg[2].print_float(d3, decimal_digits=0, justify_right=True)
+            SevSeg[2].write_display()
+    except: 
+        st = False
+
+    return st  
 
 # 
 # ----------- test function -----------

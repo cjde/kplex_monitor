@@ -241,8 +241,8 @@ def main(argv):
 
                     # calculate the avg heading 
                     track = h.get_track()
-
-                    update_displays(SEVSEG, heading, track)
+                    if not ( update_displays(SEVSEG, heading, track) ):
+                       print "lost connection to display" 
             else:
                 print "junk ", line
 
