@@ -7,52 +7,53 @@ from math import cos, sin, atan2, pi, radians, degrees
 import sys
 
 # heading -> headings[] -avg-> track -> tracks[]
-tracks = []
+# Couple definitions
+#
+# Heading:
+# This is where my nose points relative to North.
+#
+# Course:
+# This is my INTENDED path of travel that I have calculated taking into consideration winds, 
+# variation and declination.
+#
+# Track:
+# This is my ACTUAL path traveled over ground - just like a set of tracks I would leave behind in the snow or sand, 
+# relative to North
+#
+# Bearing:
+# This is the angle between the location of an object, machine or destination and either:
+#
+# In this case A heading is collected every M seconds when ever a the compass emits one.
+# A heading consists of the compass angle and the angle transformed into a geometric angle, radians of that angle
+# the sin and cos of that angle. These are saved so that we dont need to calculate them again
+#
+#    {"compass": 270, "angle": 180, "radians": 3.141592654 "cos": -1.000000000, "sin": 0.00000 },
+#    {"compass": 270, "angle": 180, "radians": 3.141592654 "cos": -1.000000000, "sin": 0.00000 },
+#    {"compass": 271, "angle": 179, "radians": 3.124139361 "cos": -0.999847695, "sin": 0.01745 },
+#    {"compass": 272, "angle": 178, "radians": 3.106686069 "cos": -0.999390827, "sin": 0.03490 },
+#    {"compass": 269, "angle": 181, "radians": 3.159045946 "cos": -0.999847695, "sin": -0.01745 },
+#    {"compass": 268, "angle": 182, "radians": 3.176499239 "cos": -0.999390827, "sin": -0.03490 }
+
+#
+# headings are a ordered list of several headings up to a maximum number,
+# Headings are added to the front and removed from  the back and removed at the end
+#  [h1,h2,h3,h4,...hn ]
 headings = []
 headings_in_track = 50
+
+# tracks are the set of track that have occurred over the route. A new entry is added when ever the average course 
+# changes by the tack angle
+# or if the rate of  heading change is greater than something ?
+#  [t1,t2,t3,...tn]
+tracks = []
 tracks_in_route = 50
 
+
 class HEADING:
-    # Couple definitions
-    #
-    # Heading:
-    # This is where my nose points relative to North.
-    #
-    # Course:
-    # This is my INTENDED path of travel that I have calculated taking into consideration winds, variation and declination.
-    #
-    # Track:
-    # This is my ACTUAL path traveled over ground - just like a set of tracks I would leave behind in the snow or sand, relative to North
-    #
-    # Bearing:
-    # This is the angle between the location of an object, machine or destination and either:
-    #
-    # In this case A heading is collected every M seconds when ever a the compass emits one.
-    # A heading consists of the compass angle and the angle transformed into a geometric angle, radians of that angle
-    # the sin and cos of that angle. These are saved so that we dont need to calculate them again
-    #
-    #    {"compass": 270, "angle": 180, "radians": 3.141592654 "cos": -1.000000000, "sin": 0.00000 },
-    #    {"compass": 270, "angle": 180, "radians": 3.141592654 "cos": -1.000000000, "sin": 0.00000 },
-    #    {"compass": 271, "angle": 179, "radians": 3.124139361 "cos": -0.999847695, "sin": 0.01745 },
-    #    {"compass": 272, "angle": 178, "radians": 3.106686069 "cos": -0.999390827, "sin": 0.03490 },
-    #    {"compass": 269, "angle": 181, "radians": 3.159045946 "cos": -0.999847695, "sin": -0.01745 },
-    #    {"compass": 268, "angle": 182, "radians": 3.176499239 "cos": -0.999390827, "sin": -0.03490 }
-
-    #
-    # headings are a ordered list of several headings up to a maximum number,
-    # Headings are added to the front and removed from  the back and removed at the end
-    #  [h1,h2,h3,h4,...hn ]
-    ### headings = []
-
     # track is the compass angle averaged over the last N headings
-    track  = 0
+    track = 0
 
-    # tracks are the set of track that have occurred over the route. A new entry is added when ever the average course changes by the tack angle
-    # or if the rate of  heading change is greater than something ?
-    #  [t1,t2,t3,...tn]
-    ### tracks = []
-
-    def __init__( self, c ):
+    def __init__(self, c):
         """
         This is the constructor for the heading it takes the compass reading and computes the sin and cos
         :param c: degrees in the compass domain
@@ -60,24 +61,24 @@ class HEADING:
         """
 
         self.compass = c
-        self.angle = (450-c) % 360
-        self.radians = radians( self.angle )
-        self.cos = cos( self.radians )
-        self.sin = sin( self.radians )
+        self.angle = (450 - c) % 360
+        self.radians = radians(self.angle)
+        self.cos = cos(self.radians)
+        self.sin = sin(self.radians)
 
-    def add_heading(self, h1 ):
+    def add_heading(self, h1):
         """
         This adds two headings together without using the vector components
         For example if the course is 90 degreens ( east) and you  your tack angle is 35 degrees
         then this should output 125 degrees. Of course if your heading is 350 then the resultant
         should be 350+35-360=25
         """
-        c = self.compass + h2.compass
+        c = self.compass + h1.compass
         if c > 360:
             c = c - 360
         return c
 
-    def sub_heading(self, h1 ):
+    def sub_heading(self, h1):
         """
         This subtracts two headings together without using the vector components
         For example if the course is 90 degrees ( east ) and you  your tack angle is 35 degrees
@@ -89,7 +90,7 @@ class HEADING:
             c = c + 360
         return c
 
-    def get_track( self ):
+    def get_track(self):
         """
         This computes the average track by using the headings cos and sin values.
         they are summed and then used in atan2 to come up with the compass angle of the
@@ -97,7 +98,7 @@ class HEADING:
 
         :return: avg compass heading
         """
-        
+
         global headings
 
         avg_cos = 0.0
@@ -107,13 +108,13 @@ class HEADING:
             avg_cos += h.cos
             avg_sin += h.sin
 
-        avg_rad = atan2( avg_sin, avg_cos)
-        angle = degrees( avg_rad )
+        avg_rad = atan2(avg_sin, avg_cos)
+        angle = degrees(avg_rad)
         # untwist the geometric angle back into a compass angle
-        compass = (450-angle) %  360
+        compass = (450 - angle) % 360
         return compass
 
-    def add_to_headings( self ):
+    def add_to_headings(self):
         """
         Add the heading to the list of headings so that we can compute the average track, and remove the last one from the list if we have added
         the maximum to the list
@@ -124,12 +125,13 @@ class HEADING:
         """
         global headings
         global headings_in_track
-        
-        headings.insert( 0, self )
-        if len(headings) >= headings_in_track:
-           del ( headings[ headings_in_track] )
 
-#### 
+        headings.insert(0, self)
+        if len(headings) >= headings_in_track:
+            del (headings[headings_in_track])
+
+
+####
 """
 
     def do_heading_calc( self, heading, course, tacks ):
@@ -196,10 +198,11 @@ class HEADING:
 #
 
 if __name__ == "__main__":
-    T = [270,270,271,271,269,269,272,272,268,268]
+    T = [270, 270, 271, 271, 269, 269, 272, 272, 268, 268]
     for heading in T:
         h = HEADING(heading)
         h.add_to_headings()
         track = h.get_track()
         print(heading, track)
+
 
