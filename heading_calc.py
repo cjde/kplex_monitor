@@ -39,7 +39,7 @@ import sys
 # Headings are added to the front and removed from  the back and removed at the end
 #  [h1,h2,h3,h4,...hn ]
 headings = []
-headings_in_track = 50
+headings_in_track = 25 
 
 # tracks are the set of track that have occurred over the route. A new entry is added when ever the average course 
 # changes by the tack angle
@@ -53,6 +53,13 @@ class HEADING:
     # track is the compass angle averaged over the last N headings
     track = 0
 
+    def clear_headings(self):
+        """
+        """
+        global headings
+        del headings[:]
+
+       
     def __init__(self, c):
         """
         This is the constructor for the heading it takes the compass reading and computes the sin and cos
@@ -127,7 +134,7 @@ class HEADING:
         global headings_in_track
 
         headings.insert(0, self)
-        if len(headings) >= headings_in_track:
+        if len(headings) >= headings_in_track + 1:
             del (headings[headings_in_track])
 
 
@@ -204,5 +211,16 @@ if __name__ == "__main__":
         h.add_to_headings()
         track = h.get_track()
         print(heading, track)
+    
+    
 
+    degree = HEADING( 1 ) 
+    degree.clear_headings()
+    c = 0
+    for i in range( 1,100 ):
+        h = HEADING( c )
+        h.add_to_headings( )
+        track = h.get_track()
+        print ( c,  track )
+        c = h.add_heading( degree )
 
