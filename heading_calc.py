@@ -39,7 +39,7 @@ import sys
 # Headings are added to the front and removed from  the back and removed at the end
 #  [h1,h2,h3,h4,...hn ]
 headings = []
-headings_in_track = 25 
+headings_in_track = 60 
 
 # tracks are the set of track that have occurred over the route. A new entry is added when ever the average course 
 # changes by the tack angle
@@ -205,22 +205,56 @@ class HEADING:
 #
 
 if __name__ == "__main__":
-    T = [270, 270, 271, 271, 269, 269, 272, 272, 268, 268]
-    for heading in T:
-        h = HEADING(heading)
-        h.add_to_headings()
-        track = h.get_track()
-        print(heading, track)
-    
-    
 
+    # test 1 - result should be 1/2 of headings_in_track 
     degree = HEADING( 1 ) 
     degree.clear_headings()
-    c = 0
-    for i in range( 1,100 ):
+    c = 1
+    for i in range( 1,headings_in_track ):
         h = HEADING( c )
         h.add_to_headings( )
-        track = h.get_track()
-        print ( c,  track )
         c = h.add_heading( degree )
+  
+    track = h.get_track()
+    print (  " this should be twice size",  c,  track )
+
+    # test 2- result should be zero 
+    degree = HEADING( 1 ) 
+    degree.clear_headings()
+    c =   360 - (headings_in_track/2 -1 )  
+    for i in range( 1,headings_in_track ):
+        h = HEADING( c )
+        h.add_to_headings( )
+        c = h.add_heading( degree )
+  
+    track = h.get_track()
+    print ( "should be 1/2 of ", headings_in_track," and zero", c,  track )
+
+
+    # test 3- result should be Zero using negitave compass value 
+    degree = HEADING( 1 ) 
+    degree.clear_headings()
+    c =  - (headings_in_track/2 - 1)  
+    for i in range( 1,headings_in_track ):
+        h = HEADING( c )
+        h.add_to_headings( )
+        c = h.add_heading( degree )
+  
+    track = h.get_track()
+    print ( "should be 1/2 of ", headings_in_track," and zero", c,  track )
+
+
+
+    # test 3- result should be 180 
+    degree = HEADING( 1 ) 
+    degree.clear_headings()
+    c =  180 - (headings_in_track/2 - 1)  
+    for i in range( 1,headings_in_track ):
+        h = HEADING( c )
+        h.add_to_headings( )
+        c = h.add_heading( degree )
+  
+    track = h.get_track()
+    print ( "should be ", headings_in_track/2, " + 180 and 180", c,  track )
+
 
