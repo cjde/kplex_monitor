@@ -68,44 +68,44 @@ def SevenSegSetup(SevSeg):
 
 
 
-def update_displays(SevSeg, heading, tacks ):
+def update_displays(SevSeg, d1, d2 ):
     '''
     This takes updates the displays with the heading and if they are connected,
     the headings from the previous two tacks
 
-    :param heading: Compas heading to put on the primary display
-    :param tacks: List of tacks if there are no previous tacs tod display the lithe up all segments
+    :param d1: Compas value on the first display  
+    :param d2: compas value on the second display 
     :return:
     '''
-   
-    print "heading: ", heading 
+    d3 = 0 
+    print "headings: ", d1, d2
 
     if SevSeg[0]:
         SevSeg[0].clear()
-        if heading < 0 :
+        if d1 < 0 :
             SevSeg[0].print_hex(0x8888)
         else:
-            SevSeg[0].print_float(heading, decimal_digits=0, justify_right=True)
+            SevSeg[0].print_float(d1, decimal_digits=0, justify_right=True)
         SevSeg[0].write_display()
 
     # when the other displays are available we can display them here 
     # this is the display for the previous tack 
     if SevSeg[1]:
         SevSeg[1].clear()
-        if tacks[1] < 0 :
+        if d2 < 0 :
             SevSeg[1].print_hex(0x00)
         else:
-            SevSeg[1].print_float(tacks[1], decimal_digits=0, justify_right=True)
+            SevSeg[1].print_float(d2, decimal_digits=0, justify_right=True)
         SevSeg[1].write_display()
 
         
     # if this display is connected then this would hold the tack from 2 tack agoa 
     if SevSeg[2]:
         SevSeg[2].clear()
-        if tacks[1] < 0 :
+        if d3  < 0 :
             SevSeg[2].print_hex(0x00)
         else:
-            SevSeg[2].print_float(tacks[2], decimal_digits=0, justify_right=True)
+            SevSeg[2].print_float(d3, decimal_digits=0, justify_right=True)
         SevSeg[2].write_display()
 
 # 
@@ -122,13 +122,13 @@ if __name__ == "__main__":
    if SevenSegSetup(SEVSEG): 
         time.sleep(.75)
         SEVSEG[0].print_hex('8888')
-        tacks = [90,180,270]
-        heading = 135 
         time.sleep(.75)
-        update_displays( SEVSEG, heading, tacks ) 
-        tacks = [heading] + tacks[:-1]
+         
+        heading1 = 135 
+        heading2 = 210  
+        update_displays( SEVSEG, heading1, heading2 ) 
         time.sleep(.75)
-        update_displays( SEVSEG, tacks[2], tacks ) 
+
    else: 
         print "Primary LED display not detected"
         exit    

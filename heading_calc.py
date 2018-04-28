@@ -39,7 +39,7 @@ import sys
 # Headings are added to the front and removed from  the back and removed at the end
 #  [h1,h2,h3,h4,...hn ]
 headings = []
-headings_in_track = 60 
+headings_in_track = 90 
 
 # tracks are the set of track that have occurred over the route. A new entry is added when ever the average course 
 # changes by the tack angle
