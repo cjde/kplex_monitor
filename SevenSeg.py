@@ -8,7 +8,7 @@ from Adafruit_LED_Backpack import SevenSegment
 def SevenSegSetup(SevSeg):
     '''
     This checks if the seven segment desplay is on I2C bus address
-    and return true if it was able to set it up. if hte i2cdetect is not available or
+    and return true if it was able to set it up. If the i2cdetect is not available or
     address 70 is not detected then return false
     '''
 
@@ -64,8 +64,6 @@ def SevenSegSetup(SevSeg):
                 SevSeg[2].write_display()
 
     return got_display
-
-
 
 
 def update_displays(SevSeg, d1, d2 ):

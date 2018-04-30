@@ -46,12 +46,12 @@ headings_in_track = 90
 # or if the rate of  heading change is greater than something ?
 #  [t1,t2,t3,...tn]
 tracks = []
-tracks_in_route = 50
+tracks_in_route = 60
 
 
 class HEADING:
     # track is the compass angle averaged over the last N headings
-    track = 0
+    # track = 0
 
     def clear_headings(self):
         """
