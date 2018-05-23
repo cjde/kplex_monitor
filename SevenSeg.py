@@ -76,41 +76,54 @@ def update_displays(SevSeg, d1, d2 ):
     :return:
     '''
     d3 = 0 
+    # if the display has com loose, we may need to reset the bus 
+    success = True
     # print "headings: ", d1, d2
 
-    try: 
-        st = True 
-        if SevSeg[0]:
-            SevSeg[0].clear()
-            if d1 < 0 :
-                SevSeg[0].print_hex(0x8888)
-            else:
-                SevSeg[0].print_float(d1, decimal_digits=0, justify_right=True)
-            SevSeg[0].write_display()
+    if SevSeg[0]:
+        SevSeg[0].clear()
+        if d1 < 0 :
+            SevSeg[0].print_hex(0x8888)
+        else:
+            SevSeg[0].print_float(d1, decimal_digits=0, justify_right=True)
 
-        # when the other displays are available we can display them here 
-        # this is the display for the previous tack 
-        if SevSeg[1]:
-            SevSeg[1].clear()
-            if d2 < 0 :
-                SevSeg[1].print_hex(0x00)
-            else:
-                SevSeg[1].print_float(d2, decimal_digits=0, justify_right=True)
+        try:  
+            SevSeg[0].write_display()
+        except: 
+            success = False
+            print "Display 0 is disconnected" 
+
+    # when the other displays are available we can display them here 
+    # this is the display for the previous tack 
+    if SevSeg[1]:
+        SevSeg[1].clear()
+        if d2 < 0 :
+            SevSeg[1].print_hex(0x00)
+        else:
+            SevSeg[1].print_float(d2, decimal_digits=0, justify_right=True)
+
+        try:  
             SevSeg[1].write_display()
+        except: 
+            success = False
+            print "Display 1 is disconnected" 
 
         
-        # if this display is connected then this would hold the tack from 2 tack agoa 
-        if SevSeg[2]:
-            SevSeg[2].clear()
-            if d3  < 0 :
-                SevSeg[2].print_hex(0x00)
-            else:
-                SevSeg[2].print_float(d3, decimal_digits=0, justify_right=True)
-            SevSeg[2].write_display()
-    except: 
-        st = False
+    # if this display is connected then this would hold the tack from 2 tack agoa 
+    if SevSeg[2]:
+        SevSeg[2].clear()
+        if d3  < 0 :
+            SevSeg[2].print_hex(0x00)
+        else:
+            SevSeg[2].print_float(d3, decimal_digits=0, justify_right=True)
 
-    return st  
+        try:  
+            SevSeg[2].write_display()
+        except: 
+            success = False
+            print "Display 2 is disconnected" 
+
+    return  success
 
 # 
 # ----------- test function -----------
@@ -126,6 +139,17 @@ if __name__ == "__main__":
    if SevenSegSetup(SEVSEG): 
         time.sleep(.75)
         SEVSEG[0].print_hex('8888')
+        SEVSEG[0].write_display()
+        time.sleep(.75)
+         
+        heading1 = 100 
+        heading2 = 200  
+        update_displays( SEVSEG, heading1, heading2 ) 
+        time.sleep(.75)
+         
+        heading1 = 150
+        heading2 = 250  
+        update_displays( SEVSEG, heading1, heading2 ) 
         time.sleep(.75)
          
         heading1 = 135 

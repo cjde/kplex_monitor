@@ -123,8 +123,8 @@ def set_error_status( stat, pins):
     Currently only four status codes are output 
     Error code    Description
          1        Primary LED backpack at address 70 is not detected, others if detected will have thier addresses on them
-         2
-         3
+         2        KPLES is sick 
+         3        Primary display is disconnected 
          4
     :param stat: error code ( number of LEDS to turn on )
     :param pins: list of pins that have LEDs attached
@@ -156,6 +156,7 @@ def main(argv):
     # Error codes
     NO_PRIMARY_DISPLAY = 1
     NO_KPLEXSERVER = 2
+    PRIMARY_DISPLAY_OFFLINE = 3
 
     # This associates what pin and ultimatelys what LED is associated with each instrument
     LEDS = {'gps': 32, 'compass': 36, 'speed': 38, 'unknown': 40}
@@ -204,6 +205,7 @@ def main(argv):
     # Get the time from the GPS only once
     needtime = True
 
+    
     try:
         while True:
             # get the next sentence
@@ -242,7 +244,9 @@ def main(argv):
                     # calculate the avg heading 
                     track = h.get_track()
                     if not ( update_displays(SEVSEG, heading, track) ):
-                       print "lost connection to display" 
+                       print "Lost connection to display" 
+                       set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
+                       exit 
             else:
                 print "junk ", line
 
