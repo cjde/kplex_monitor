@@ -5,6 +5,14 @@ import argparse
 import sys
 from Adafruit_LED_Backpack import SevenSegment
 
+# this is the device to display mapping table 
+# this say what LED dispaly has what address and what pattern to look for in the I2C output 
+device=[
+ {'disp': 0, 'pat': ' 70 ', 'addr': 0x70}, 
+ {'disp': 1, 'pat': ' 71 ', 'addr': 0x71}, 
+ {'disp': 2, 'pat': ' 72 ', 'addr': 0x72}
+]
+
 def SevenSegSetup(SevSeg):
     '''
     This checks if the seven segment desplay is on I2C bus address
@@ -37,31 +45,28 @@ def SevenSegSetup(SevSeg):
         '''
         #cmdout = str(p.communicate())
 
-        # look for the addresses of the displays
+        # look for the addresses of the displays and put the address (in hex ) on the LED
+        # nine line of output ....  
         for i in range(0,9):
             line = str(p.stdout.readline())
 
-            for match in re.finditer(" 70 ", line):
-                SevSeg[0] = SevenSegment.SevenSegment(address=0x70,busnum=1)
-                SevSeg[0].begin()
-                SevSeg[0].clear()
-                SevSeg[0].print_float(70, decimal_digits=0 )
-                SevSeg[0].write_display()
-                got_display = True
-
-            for match in re.finditer(" 71 ", line):
-                SevSeg[1] = SevenSegment.SevenSegment(address=0x71,busnum=1)
-                SevSeg[1].begin()
-                SevSeg[1].clear()
-                SevSeg[1].print_float(71, decimal_digits=0 )
-                SevSeg[1].write_display()
-
-            for match in re.finditer(" 72 ", line):
-                SevSeg[2] = SevenSegment.SevenSegment(address=0x72,busnum=1)
-                SevSeg[2].begin()
-                SevSeg[2].clear()
-                SevSeg[2].print_float(72, decimal_digits=0 )
-                SevSeg[2].write_display()
+            # look for the pattern in each line 
+            for i in range(0,len(device)-1):
+                # need the LED display number, the hex address of the I2C bus and 
+                # the pattern to find in the i2c output that says it is there 
+                disp = device[i]['disp']
+                addr = device[i]['addr']
+                pat = device[i]['pat']
+                
+                # look for the devices in the i2cdetect output  
+                for match in re.finditer(pat, line):
+                    SevSeg[disp] = SevenSegment.SevenSegment(address=addr,busnum=1)
+                    SevSeg[disp].begin()
+                    SevSeg[disp].clear()
+                    SevSeg[disp].print_hex(addr )
+                    SevSeg[disp].write_display()
+                    SevSeg[disp].set_brightness(1)
+                    got_display = True
 
     return got_display
 
@@ -138,8 +143,12 @@ if __name__ == "__main__":
 
    if SevenSegSetup(SEVSEG): 
         time.sleep(.75)
+        SEVSEG[0].set_brightness(1)
         SEVSEG[0].print_hex('8888')
         SEVSEG[0].write_display()
+        SEVSEG[1].set_brightness(1)
+        SEVSEG[1].print_hex('8888')
+        SEVSEG[1].write_display()
         time.sleep(.75)
          
         heading1 = 100 
