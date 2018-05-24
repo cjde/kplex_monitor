@@ -167,11 +167,14 @@ def main(argv):
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD) ## Use BOARD pin numbering
 
-    # set all the indicators to output
+    # turn it all off 
+    for pin  in PINS:
+        GPIO.setup(int(pin), GPIO.OUT)
+        GPIO.output(int(pin), False)
 
+    # set all the indicators to output
     for pin  in PINS:
         print pin
-        GPIO.setup(int(pin), GPIO.OUT)
         GPIO.output(int(pin), True)
         time.sleep(.50)
         GPIO.output(int(pin), False)
@@ -181,7 +184,7 @@ def main(argv):
         GPIO.output(int(pin), False)
         time.sleep(.10)
 
-    # if the seven segment display is plugged in then we will use it
+    # if the primary seven segment display is plugged in then we will use it
     # otherwize output the error code ands exit
     if  SevenSegSetup(SEVSEG) != 1:
         print "Primary LED display not detected"
@@ -204,14 +207,13 @@ def main(argv):
 
     # Get the time from the GPS only once
     needtime = True
-
     
     try:
         while True:
-            # get the next sentence
-            line = buffered_readLine(s)
             # turn off the last one
             GPIO.output(int(pin), False)
+            # get the next sentence
+            line = buffered_readLine(s)
 
             # check if the first two characters are not trash
             if ( line[0] == '$') and ( line[1].isalpha()) and ( line[2].isalpha()):
