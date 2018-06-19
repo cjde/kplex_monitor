@@ -14,6 +14,11 @@ from heading_calc import HEADING
 from socket import error as socket_error
 import RPi.GPIO as GPIO ## Import GPIO Library
 
+# this is the number of second between each compas reading e  
+# it is used to slow down frequencey of compass data updates 
+# it can be between 0.1 and 10 indicating that the compass data 
+# should be collected every 10th of a second up to every 10 seconds  
+COMPASS_RESOLUTION = 1  
 
 
 ## cource change amount that indicates a tack has occured
@@ -130,15 +135,19 @@ def set_error_status( stat, pins):
     :param pins: list of pins that have LEDs attached
     :return
     '''
-    if stat >= 1:
-        GPIO.output(pins[0], True)
-    if stat >= 2:
-        GPIO.output(pins[1], True)
-    if stat >= 3:
-        GPIO.output(pins[2], True)
-    if stat >= 4:
-        GPIO.output(pins[3], True)
-
+    state = True
+    while True: 
+        if stat >= 1:
+            GPIO.output(pins[0], state)
+        if stat >= 2:
+            GPIO.output(pins[1], state)
+        if stat >= 3:
+            GPIO.output(pins[2], state)
+        if stat >= 4:
+            GPIO.output(pins[3], state)
+        time.sleep(.50)
+        state = not state
+ 
 
 #----- MAIN -----
 def main(argv):
@@ -208,6 +217,10 @@ def main(argv):
     # Get the time from the GPS only once
     needtime = True
     
+    # the comapass puts out a comapas heading every 0.1 sec. Really only need it 1/second 
+    # so dont save it if less that 1 second has passed
+    compass_timestamp = time.time()
+    
     try:
         while True:
             # turn off the last one
@@ -237,18 +250,23 @@ def main(argv):
                     needtime = getgpstime( line )
 
                 # get a heading if this is a headiing sentence
-                heading =  get_heading( line )
                 # returns the headign or -1 if not a heading
-                if heading >= 0:
+                heading =  get_heading( line )
+
+                # get the current time so we can ignore compass  reading that are too fast 
+                curr_timestamp =  time.time() 
+
+                if ( heading >= 0 ) and ( curr_timestamp >= ( compass_timestamp + COMPASS_RESOLUTION )): 
+                    compass_timestamp = curr_timestamp  
                     h = HEADING( heading )
                     h.add_to_headings()
 
                     # calculate the avg heading 
                     track = h.get_track()
-                    if not ( update_displays(SEVSEG, heading, track) ):
+                    print "Heading: ",heading," Track:",track," Delta:",int(round(heading-track))
+                    if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)) )) :
                        print "Lost connection to display" 
                        set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
-                       exit 
             else:
                 print "junk ", line
 
