@@ -22,7 +22,7 @@ COMPASS_RESOLUTION = 1
 
 
 ## cource change amount that indicates a tack has occured
-#TACKANGLE = 40
+TACKANGLE = 60
 #
 ## this is the number of heading samples that constitute a average course
 #num_of_heading_in_course_average = 30
@@ -128,7 +128,7 @@ def set_error_status( stat, pins):
     Currently only four status codes are output 
     Error code    Description
          1        Primary LED backpack at address 70 is not detected, others if detected will have thier addresses on them
-         2        KPLES is sick 
+         2        KPLEX is sick 
          3        Primary display is disconnected 
          4
     :param stat: error code ( number of LEDS to turn on )
@@ -163,8 +163,11 @@ def main(argv):
     PINS = [32,36,38,40]
 
     # Error codes
+    # primare display at address 70 is not detected 
     NO_PRIMARY_DISPLAY = 1
+    # kplex serer is not responding 
     NO_KPLEXSERVER = 2
+    # after initializing the primary display went off line this seems to happen if there is a brown out 
     PRIMARY_DISPLAY_OFFLINE = 3
 
     # This associates what pin and ultimatelys what LED is associated with each instrument
@@ -220,7 +223,7 @@ def main(argv):
     # the comapass puts out a comapas heading every 0.1 sec. Really only need it 1/second 
     # so dont save it if less that 1 second has passed
     compass_timestamp = time.time()
-    
+
     try:
         while True:
             # turn off the last one
@@ -258,11 +261,14 @@ def main(argv):
 
                 if ( heading >= 0 ) and ( curr_timestamp >= ( compass_timestamp + COMPASS_RESOLUTION )): 
                     compass_timestamp = curr_timestamp  
+
+                    # could do some optimizing here and not recompute the heading if it is the same, just add it to the list again. 
                     h = HEADING( heading )
                     h.add_to_headings()
-
+                    
                     # calculate the avg heading 
                     track = h.get_track()
+ 
                     print "Heading: ",heading," Track:",track," Delta:",int(round(heading-track))
                     if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)) )) :
                        print "Lost connection to display" 

@@ -16,7 +16,10 @@ file=boot_test.txt
 # Interval default 1 sec 
 interval=1
 
-while getopts ":w:f:i:" o; do
+# by default dont add a ^M to the imput line 
+addcr=""
+
+while getopts ":w:f:i:m" o; do
     case "${o}" in
         w)
             wait=${OPTARG}
@@ -27,6 +30,9 @@ while getopts ":w:f:i:" o; do
         i)
             interval=${OPTARG}
             ;;
+        m)
+            addcr=""
+            ;;
         *)
             usage
             ;;
@@ -36,5 +42,5 @@ shift $((OPTIND-1))
 
 sleep $wait 
 cd /usr/sbin/kplex_monitor.d
-cat $file |( while read l ; do sleep $interval; echo $l ; done )| nc 127.0.0.1 10111
+cat $file |( while read l ; do sleep $interval; echo "${l}${addcr}" ; done )| nc 127.0.0.1 10111
 
