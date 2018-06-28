@@ -22,7 +22,7 @@ COMPASS_RESOLUTION = 1
 
 
 ## cource change amount that indicates a tack has occured
-TACKANGLE = 60
+TACKANGLE = 70
 #
 ## this is the number of heading samples that constitute a average course
 #num_of_heading_in_course_average = 30
@@ -270,10 +270,10 @@ def main(argv):
                     track = h.get_track()
 
                     # check if the new heading is the result of a tack, and reset the track if it is
-                    if tack_check(self, track, tackangle):
-                        print "tacked from ",track," to ", heading
+                    if h.tack_check( track, TACKANGLE ):
+                        print "Tacked from ", int(round(track))," to ",  int(round(heading))
 
-                    print "Heading: ",heading," Track:",track," Delta:",int(round(heading-track))
+                    print "Heading: ",heading," Track:",int(round(track)) ," Delta:",int(round(heading-track))
                     if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)) )) :
                        print "Lost connection to display" 
                        set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )

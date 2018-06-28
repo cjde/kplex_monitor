@@ -157,13 +157,16 @@ class HEADING:
         # so long as the heading is between these two angele we have not tacked
         lower = t360 - tackangle/2
         upper = t360 + tackangle/2
+        
+        # print "check if heading",h360," is between ",lower," and ", upper 
 
         if h360 > lower and h360 < upper :
+            # still in between the tabs on the wind vane! 
+            just_tacked = False
+        else:
             # when the tack  occurs the track is reset so the average converges faster to the new heading
             just_tacked = True
             self.clear_headings()
-        else:
-            just_tacked = False
 
         return just_tacked
 
