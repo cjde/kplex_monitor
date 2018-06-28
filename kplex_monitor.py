@@ -269,14 +269,15 @@ def main(argv):
                     # calculate the avg heading 
                     track = h.get_track()
 
-                    # check if the new heading is the result of a tack, and reset the track if it is
-                    if h.tack_check( track, TACKANGLE ):
-                        print "Tacked from ", int(round(track))," to ",  int(round(heading))
-
                     print "Heading: ",heading," Track:",int(round(track)) ," Delta:",int(round(heading-track))
                     if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)) )) :
                        print "Lost connection to display" 
                        set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
+
+                    # check if the new heading is the result of a tack, and reset the track if it is
+                    if h.tack_check( track, TACKANGLE ):
+                        print "Tacked from ", int(round(track))," to ",  int(round(heading))
+
             else:
                 print "junk ", line
 
