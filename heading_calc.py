@@ -138,6 +138,34 @@ class HEADING:
         if len(headings) >= headings_in_track + 1:
             del (headings[headings_in_track])
 
+    def tack_check(self, track, tackangle):
+        """
+        Computes the minimum and maximum headings on the current track given the tackangle.
+        Checks if the current heading is between these two headings and if not then that
+        indicates that we have tacked
+        :param track:       Compass course of current track
+        :param tackangle:   Angle the boat must traverse to go from one beat to another. Basicly 2x the angle
+                            we can sail off the wind ( for a J27 thats 60 degrees)
+        :return: true if a tack is detected, false otherwize
+        """
+
+        # to avoid any complications by going to a negitave angle just add 360 to everything
+        h360 = self.compass + 360
+        t360 = track + 360
+
+        # minimum and maximum heading off the track,
+        # so long as the heading is between these two angele we have not tacked
+        lower = t360 - tackangle/2
+        upper = t360 + tackangle/2
+
+        if h360 > lower and h360 < upper :
+            # when the tack  occurs the track is reset so the average converges faster to the new heading
+            just_tacked = True
+            self.clear_headings()
+        else:
+            just_tacked = False
+
+        return just_tacked
 
 ####
 """
