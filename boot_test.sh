@@ -41,6 +41,7 @@ done
 shift $((OPTIND-1))
 
 sleep $wait 
-cd /usr/sbin/kplex_monitor.d
+#cd /usr/sbin/kplex_monitor.d
+cd /home/pi/kplex_monitor.d
 cat $file |( while read l ; do sleep $interval; echo "${l}${addcr}" ; done )| nc 127.0.0.1 10111
 
