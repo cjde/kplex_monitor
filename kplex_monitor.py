@@ -223,7 +223,8 @@ def main(argv):
     # the comapass puts out a comapas heading every 0.1 sec. Really only need it 1/second 
     # so dont save it if less that 1 second has passed
     compass_timestamp = time.time()
-
+    # initial last tack
+    last_tack = 8888.0
     try:
         while True:
             # turn off the last one
@@ -270,14 +271,16 @@ def main(argv):
                     track = h.get_track()
 
                     print "Heading: ",heading," Track:",int(round(track)) ," Delta:",int(round(heading-track))
-                    if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)) )) :
+                    if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)), int(round(last_tack)) )) :
                        print "Lost connection to display" 
                        set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
 
                     # check if the new heading is the result of a tack, and reset the track if it is
                     if h.tack_check( track, TACKANGLE ):
                         print "Tacked from ", int(round(track))," to ",  int(round(heading))
-
+                        # add the old track to to the race and put the last track on the display for next time
+                        h.add_track_to tacks( int(round(track)) )
+                        last_tack = track
             else:
                 print "junk ", line
 

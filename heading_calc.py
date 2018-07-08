@@ -48,6 +48,9 @@ headings_in_track = 60
 tracks = []
 tracks_in_route = 60
 
+# tacks  contain the last 10 track changes, these are ( potentially ) displayed
+tacks = []
+tacks_in_race = 10
 
 class HEADING:
     # track is the compass angle averaged over the last N headings
@@ -55,6 +58,8 @@ class HEADING:
 
     def clear_headings(self):
         """
+        This clears the list of headings that are collected and averaged to generate the track.
+        When a tack occurs this is cleared so that the new average reflecte the new heading
         """
         global headings
         del headings[:]
@@ -121,22 +126,6 @@ class HEADING:
         compass = (450 - angle) % 360
         return compass
 
-    def add_to_headings(self):
-        """
-        Add the heading to the list of headings so that we can compute the average track, and remove the last one from the list if we have added
-        the maximum to the list
-
-        :param h: heading to add to the track
-        return:
-
-        """
-        global headings
-        global headings_in_track
-
-        headings.insert(0, self)
-        if len(headings) >= headings_in_track + 1:
-            del (headings[headings_in_track])
-
     def tack_check(self, track, tackangle):
         """
         Computes the minimum and maximum headings on the current track given the tackangle.
@@ -156,11 +145,11 @@ class HEADING:
         # so long as the heading is between these two angele we have not tacked
         lower = t360 - tackangle/2
         upper = t360 + tackangle/2
-        
-        # print "check if heading",h360," is between ",lower," and ", upper 
+
+        # print "check if heading",h360," is between ",lower," and ", upper
 
         if h360 > lower and h360 < upper :
-            # still in between the tabs on the wind vane! 
+            # still in between the tabs on the wind vane!
             just_tacked = False
         else:
             # when the tack  occurs the track is reset so the average converges faster to the new heading
@@ -169,68 +158,40 @@ class HEADING:
 
         return just_tacked
 
-####
-"""
+    def add_to_headings(self):
+        """
+        Add the heading to the list of headings so that we can compute the average track,
+        and remove the last one from the list if we have added
+        the maximum to the list
 
-    def do_heading_calc( self, heading, course, tacks ):
-        '''
-        This function keeps track of the current average course and the previous N course changes.
-        The course consists of the average of the past M compass readings ( 30 sec ?)
-            If it takes more that that long to tack then this average will be polluted by the heading as
-            it goes thru the tack
+        :param h: heading to add to the track
+        return:
 
-        A course change is when the heading differs by TACKANGLE degrees greater or less than the average course
-        Once a tack has occurred we must collect several readings before we can determine the average course again
+        """
+        global headings
+        global headings_in_track
 
-        Tack [1] and tack[2] are the average course just before the previous two tacks, it is planned to have
-        them displayed under the heading reading
+        headings.insert(0, self)
+        if len(headings) >= headings_in_track + 1:
+            del (headings[headings_in_track])
 
-        *Note* with the heading and the average course, we can determine if we are lifted or headed
+    def add_to_tack(self, track ):
+        """
+        Add the track (which is the previous tack) to the list of tacks
+        Remove the last one from the list if we have added the maximum to the list
+
+        :param track: average over the last collection interval ( in degrees)
+        return:
+        """
+        global tacks
+        global tacks_in_race
+
+        tacks.insert(0, track)
+        if len(tacks) >= tacks_in_race + 1:
+            del (tacks[tacks_in_race])
 
 
-        :param heading: latest reading from the compass
-        :param course: list of the past several minutes of headings
-        :param tack: list of the last 10 tacks
-        :return: true if a tack has just occured
-        '''
 
-
-        tacked = False
-        # wait until we have all the complete sample of headings ( the list is fully initialized)
-        if course[-1] == -1:
-
-            # if the current heading is +/- the tack angle degree
-            # from the average over the past minute then we have tacked !
-            # interesting thing about the average course is what if the headingh is close to north
-            # then the hwading will be 350- to 10 degrees so we goa take that into acccount
-
-            avg_course = sum(course) / float(len(course))
-            if ( heading > course_and_angle( avg_course, TACKANGLE )) :
-               tacked = True
-            elif ( heading < course_and_angle( avg_course, -TACKANGLE )):
-                tacked = True
-
-            if tacked:
-                # drop off the last tack and shift them all down
-                # set the last tack to be the average course, just before that tack occurred
-                # This average course is likely to have a couple readings of the wind header
-                # that was occurring so the average course will be slightly lower with these
-                # values computed into the course
-                tacks = [avg_course] + tacks[:-1]
-
-                # remove all the headings  from the course list
-                # Once we have a complete set we can we can compute a reasonable average course
-                course =  [-1 for i in range(len(course))]
-                course[0] = heading
-            else:
-                # we have not tacked and we been on this course for several readings
-                tacks[0] = avg_course
-        else:
-            # just collect headings until we can form an average course
-            # drop off the last heading and add this heading to the list
-            course = [heading] + course[:-1]
-        return tacked
-"""
 #
 # ----------- test function -----------
 #

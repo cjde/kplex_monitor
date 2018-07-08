@@ -72,20 +72,24 @@ def SevenSegSetup(SevSeg):
     return got_display
 
 
-def update_displays(SevSeg, d1, d2 ):
+def update_displays(SevSeg, d1, d2 , d3):
     '''
     This takes updates the displays with the heading and if they are connected,
     the headings from the previous two tacks
 
     :param d1: Compas value on the first display  
-    :param d2: compas value on the second display 
+    :param d2: compas value on the second display
+    :param d3: previous track value on the third display
+
+
     :return:
     '''
-    d3 = 0 
-    # if the display has com loose, we may need to reset the bus 
-    success = True
-    # print "headings: ", d1, d2
 
+    # if the display has com loose, or there is a brown out , we may need to reset the bus
+    success = True
+    # print "headings: ", d1, d2, d3
+
+    # this display is for the current heading
     if SevSeg[0]:
         SevSeg[0].clear()
         if d1 < 0 :
@@ -100,7 +104,7 @@ def update_displays(SevSeg, d1, d2 ):
             print "Display 0 is disconnected" 
 
     # when the other displays are available we can display them here 
-    # this is the display for the previous tack 
+    # this is the display for the  average track
     if SevSeg[1]:
         SevSeg[1].clear()
         if d2 < 0 :
@@ -115,7 +119,7 @@ def update_displays(SevSeg, d1, d2 ):
             print "Display 1 is disconnected" 
 
         
-    # if this display is connected then this would hold the tack from 2 tack agoa 
+    # if this display is connected then this would hold the heading from the last tack
     if SevSeg[2]:
         SevSeg[2].clear()
         if d3  < 0 :
@@ -153,18 +157,21 @@ if __name__ == "__main__":
         time.sleep(.75)
          
         heading1 = 100 
-        heading2 = 200  
-        update_displays( SEVSEG, heading1, heading2 ) 
+        heading2 = 200
+        heading3 = 300
+        update_displays( SEVSEG, heading1, heading2, heading3 )
         time.sleep(.75)
          
         heading1 = 150
-        heading2 = 250  
-        update_displays( SEVSEG, heading1, heading2 ) 
+        heading2 = 250
+        heading3 = 350
+        update_displays( SEVSEG, heading1, heading2, heading3 )
         time.sleep(.75)
          
         heading1 = 135 
-        heading2 = 210  
-        update_displays( SEVSEG, heading1, heading2 ) 
+        heading2 = 210
+        heading3 = 330
+        update_displays( SEVSEG, heading1, heading2, heading3 )
         time.sleep(.75)
 
    else: 
