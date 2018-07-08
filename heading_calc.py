@@ -175,7 +175,7 @@ class HEADING:
         if len(headings) >= headings_in_track + 1:
             del (headings[headings_in_track])
 
-    def add_to_tack(self, track ):
+    def add_track_to_tacks(self, track ):
         """
         Add the track (which is the previous tack) to the list of tacks
         Remove the last one from the list if we have added the maximum to the list

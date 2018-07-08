@@ -285,7 +285,7 @@ def main(argv):
                            set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
 
                         # add the old track to to the race and put the last track on the display for next time
-                        h.add_track_to tacks( int(round(track)) )
+                        h.add_track_to_tacks( int(round(track)) )
                         last_tack = track
             else:
                 print "junk ", line
