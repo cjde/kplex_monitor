@@ -278,6 +278,11 @@ def main(argv):
                     # check if the new heading is the result of a tack, and reset the track if it is
                     if h.tack_check( track, TACKANGLE ):
                         print "Tacked from ", int(round(track))," to ",  int(round(heading))
+                        # flash all segments when we reset the tack
+                        if not ( update_displays(SEVSEG, int(round(heading)), 8888, int(round(last_tack)) )) :
+                           print "Lost connection to display"
+                           set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
+
                         # add the old track to to the race and put the last track on the display for next time
                         h.add_track_to tacks( int(round(track)) )
                         last_tack = track
