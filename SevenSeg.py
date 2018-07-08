@@ -43,7 +43,7 @@ def SevenSegSetup(SevSeg):
         60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
         70: 70 71 72 -- -- -- -- --
         '''
-        #cmdout = str(p.communicate())
+        cmdout = str(p.communicate())
 
         # look for the addresses of the displays and put the address (in hex ) on the LED
         # nine line of output ....  
@@ -65,8 +65,8 @@ def SevenSegSetup(SevSeg):
                     SevSeg[disp].clear()
                     SevSeg[disp].print_hex(addr )
                     SevSeg[disp].write_display()
-                    SevSeg[disp].set_brightness(15)
-                    #SevSeg[disp].set_brightness(1)
+                    #SevSeg[disp].set_brightness(15)
+                    SevSeg[disp].set_brightness(1)
                     got_display = True
 
     return got_display

@@ -270,7 +270,8 @@ def main(argv):
                     # calculate the avg heading 
                     track = h.get_track()
 
-                    print "Heading: ",heading," Track:",int(round(track)) ," Delta:",int(round(heading-track))
+                    print "Heading: ",heading," Track:",int(round(track)) ," Delta:",int(round(heading-track)),\
+                        " Last Tack:", int(round(last_tack))
                     if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)), int(round(last_tack)) )) :
                        print "Lost connection to display" 
                        set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
