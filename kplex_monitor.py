@@ -270,20 +270,31 @@ def main(argv):
                     # calculate the avg heading 
                     track = h.get_track()
 
-                    print "Heading: ",heading," Track:",int(round(track)) ," Delta:",int(round(heading-track)),\
+                    print "Heading: ",heading,\
+                        " Track:",int(round(track)) ,\
+                        " Delta:",int(round(heading-track)),\
                         " Last Tack:", int(round(last_tack))
-                    if not ( update_displays(SEVSEG, int(round(heading)), int(round(track)), int(round(last_tack)) )) :
-                       print "Lost connection to display" 
-                       set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
+
+                    if not ( update_displays(SEVSEG,
+                         str(int(round(heading))),
+                         str(int(round(track))),
+                         str(int(round(last_tack)))
+                                             )) :
+                        print "Lost connection to display"
+                        set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
 
                     # check if the new heading is the result of a tack, and reset the track if it is
                     if h.tack_check( track, TACKANGLE ):
                         print "Tacked from ", int(round(track))," to ",  int(round(heading))
 
-                        # flash all segments when we reset the tack
-                        if not ( update_displays(SEVSEG, int(round(heading)), 8888, int(round(last_tack)) )) :
-                           print "Lost connection to display"
-                           set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
+                        # indicate on the display when we reset the track
+                        if not ( update_displays(SEVSEG,
+                             str(int(round(heading))),
+                             '----',
+                              str(int(round(last_tack)))
+                              )) :
+                            print "Lost connection to display"
+                            set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
 
                         # add the old track to to the race and put the last track on the display for next time
                         h.add_track_to_tacks( int(round(track)) )
