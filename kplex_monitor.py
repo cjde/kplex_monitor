@@ -21,8 +21,13 @@ import RPi.GPIO as GPIO ## Import GPIO Library
 COMPASS_RESOLUTION = 1  
 
 
-## cource change amount that indicates a tack has occured
-TACKANGLE = 70
+# Course change amount that indicates a tack has occured
+# IF the tack is not detected soon enough then the track will be poluted with the headings as we 
+# go thru the tack. Perhaps once a tack is detected the last several heading should be removed from the list and 
+# that average should be the last tack . MAybe the average should be collected over a n+y interval but only average the 
+# Y elements and ignore the last couple that came in ? 
+ 
+TACKANGLE =  70
 #
 ## this is the number of heading samples that constitute a average course
 #num_of_heading_in_course_average = 30
@@ -224,7 +229,7 @@ def main(argv):
     # so dont save it if less that 1 second has passed
     compass_timestamp = time.time()
     # initial last tack
-    last_tack = 8888.0
+    last_tack = 0.0
     try:
         while True:
             # turn off the last one
