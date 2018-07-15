@@ -309,7 +309,7 @@ def main(argv):
 
     except KeyboardInterrupt:
         print "User terminated"
-
+        update_displays(SEVSEG, '----','----','----') 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
