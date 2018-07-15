@@ -39,7 +39,7 @@ import sys
 # Headings are added to the front and removed from  the back and removed at the end
 #  [h1,h2,h3,h4,...hn ]
 headings = []
-headings_in_track = 60 
+headings_in_track = 80 
 
 # tracks are the set of track that have occurred over the route. A new entry is added when ever the average course 
 # changes by the tack angle
@@ -132,8 +132,8 @@ class HEADING:
         Checks if the current heading is between these two headings and if not then that
         indicates that we have tacked
         :param track:       Compass course of current track
-        :param tackangle:   Angle the boat must traverse to go from one beat to another. Basicly 2x the angle
-                            we can sail off the wind ( for a J27 thats 60 degrees)
+        :param tackangle:   Angle the boat must traverse to go from one beat to another. The angle
+                            we can sail off the wind ( for a J27 thats 70 degrees)
         :return: true if a tack is detected, false otherwize
         """
 
@@ -143,8 +143,8 @@ class HEADING:
 
         # minimum and maximum heading off the track,
         # so long as the heading is between these two angele we have not tacked
-        lower = t360 - tackangle/2
-        upper = t360 + tackangle/2
+        lower = t360 - tackangle
+        upper = t360 + tackangle
 
         # print "check if heading",h360," is between ",lower," and ", upper
 
