@@ -6,7 +6,7 @@ import re
 import argparse
 import sys
 import RPi.GPIO as GPIO ## Import GPIO Library
-from SevenSeg import SevenSegSetup,update_displays
+from SevenSeg import SevenSegSetup, update_displays, set_dot
 # from Adafruit_LED_Backpack import SevenSegment
 import socket
 import errno
@@ -175,7 +175,7 @@ def main(argv):
     # after initializing the primary display went off line this seems to happen if there is a brown out 
     PRIMARY_DISPLAY_OFFLINE = 3
 
-    # This associates what pin and ultimatelys what LED is associated with each instrument
+    # This associates what pin and ultimately what LED is associated with each instrument
     LEDS = {'gps': 32, 'compass': 36, 'speed': 38, 'unknown': 40}
 
     # This is association between the start of each NMEA sentence and the instrument it is comming from
@@ -266,7 +266,9 @@ def main(argv):
                 curr_timestamp =  time.time() 
 
                 if ( heading >= 0 ) and ( curr_timestamp >= ( compass_timestamp + COMPASS_RESOLUTION )): 
-                    compass_timestamp = curr_timestamp  
+                    compass_timestamp = curr_timestamp
+                    # turn on the decimal point to indicate that we have a valid compass angle
+                    set_dot(SEVSEG, True)
 
                     # could do some optimizing here and not recompute the heading if it is the same, just add it to the list again. 
                     h = HEADING( heading )
@@ -281,9 +283,9 @@ def main(argv):
                         " Last Tack:", int(round(last_tack))
 
                     if not ( update_displays(SEVSEG,
-                         str(int(round(heading))),
-                         str(int(round(track))),
-                         str(int(round(last_tack)))
+                         str(int(round(heading   ))).zfill(3),
+                         str(int(round(track     ))).zfill(3),
+                         str(int(round(last_tack ))).zfill(3)
                                              )) :
                         print "Lost connection to display"
                         set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
@@ -294,9 +296,9 @@ def main(argv):
 
                         # indicate on the display when we reset the track
                         if not ( update_displays(SEVSEG,
-                             str(int(round(heading))),
+                             str(int(round(heading))).zfill(3),
                              '----',
-                              str(int(round(last_tack)))
+                              str(int(round(last_tack))).zfill(3)
                               )) :
                             print "Lost connection to display"
                             set_error_status( PRIMARY_DISPLAY_OFFLINE, PINS )
@@ -304,6 +306,9 @@ def main(argv):
                         # add the old track to to the race and put the last track on the display for next time
                         h.add_track_to_tacks( int(round(track)) )
                         last_tack = track
+
+                # turn off the decimal point to indicate that we have a completed processing a compass angle
+                set_dot(SEVSEG, False)
             else:
                 print "junk ", line
 

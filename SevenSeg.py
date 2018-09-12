@@ -65,8 +65,7 @@ def SevenSegSetup(SevSeg):
                     SevSeg[disp].clear()
                     SevSeg[disp].print_hex(addr )
                     SevSeg[disp].write_display()
-                    SevSeg[disp].set_brightness(15)
-                    #SevSeg[disp].set_brightness(1)
+                    SevSeg[disp].set_brightness(10)
                     got_display = True
 
     return got_display
@@ -126,6 +125,16 @@ def update_displays(SevSeg, d1, d2 , d3):
             print "Display 2 is disconnected"
 
     return  success
+
+def set_dot( SevSeg, stat ):
+    '''
+    This turns on the decimal point and an indication that the data is being updated
+    :param SevSeg: list of displays
+    :param stat: True or false to turn on the or off the indicator decimal point
+    :return:
+    '''
+    SevSeg[0]set_decimal( 0, stat )
+    SevSeg[0].write_display()
 
 #
 # ----------- test function -----------
