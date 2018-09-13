@@ -133,7 +133,7 @@ def set_dot( SevSeg, stat ):
     :param stat: True or false to turn on the or off the indicator decimal point
     :return:
     '''
-    SevSeg[0]set_decimal( 0, stat )
+    SevSeg[0].set_decimal( 0, stat )
     SevSeg[0].write_display()
 
 #
