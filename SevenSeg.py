@@ -65,7 +65,7 @@ def SevenSegSetup(SevSeg):
                     SevSeg[disp].clear()
                     SevSeg[disp].print_hex(addr )
                     SevSeg[disp].write_display()
-                    SevSeg[disp].set_brightness(10)
+                    SevSeg[disp].set_brightness(8)
                     got_display = True
 
     return got_display

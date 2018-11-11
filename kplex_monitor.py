@@ -27,7 +27,7 @@ COMPASS_RESOLUTION = 1
 # that average should be the last tack . MAybe the average should be collected over a n+y interval but only average the 
 # Y elements and ignore the last couple that came in ? 
  
-TACKANGLE =  70
+TACKANGLE =  35
 #
 ## this is the number of heading samples that constitute a average course
 #num_of_heading_in_course_average = 30
