@@ -39,7 +39,7 @@ import sys
 # Headings are added to the front and removed from  the back and removed at the end
 #  [h1,h2,h3,h4,...hn ]
 headings = []
-headings_in_track = 80 
+headings_in_track =  30
 
 # tracks are the set of track that have occurred over the route. A new entry is added when ever the average course 
 # changes by the tack angle
@@ -146,7 +146,7 @@ class HEADING:
         lower = t360 - tackangle
         upper = t360 + tackangle
 
-        # print "check if heading",h360," is between ",lower," and ", upper
+        #print "heading ",h360," is between ",int(round(lower))," and ", int(round(upper)) 
 
         if h360 > lower and h360 < upper :
             # still in between the tabs on the wind vane!
