@@ -13,6 +13,10 @@ device=[
  {'disp': 2, 'pat': ' 72 ', 'addr': 0x72}
 ]
 
+# brightness for the display. It appears that over time the brightness settings 
+# draw too much power and cause brownout. This is used to keep track of settings
+BRIGHT=10
+
 def SevenSegSetup(SevSeg):
     '''
     This checks if the seven segment desplay is on I2C bus address
@@ -65,7 +69,7 @@ def SevenSegSetup(SevSeg):
                     SevSeg[disp].clear()
                     SevSeg[disp].print_hex(addr )
                     SevSeg[disp].write_display()
-                    SevSeg[disp].set_brightness(8)
+                    SevSeg[disp].set_brightness(BRIGHT)
                     got_display = True
 
     return got_display
@@ -136,6 +140,20 @@ def set_dot( SevSeg, stat ):
     SevSeg[0].set_decimal( 0, stat )
     SevSeg[0].write_display()
 
+def set_bright( SevSeg ):
+    '''
+    This reduces the brightness and return the current brightness value.
+    :param SevSeg: list of displays
+    :return: value of brightness ( 0 means it all the way down ) 
+    '''
+    global BRIGHT
+    print "BRIGHT =", BRIGHT 
+    SevSeg[0].set_brightness(BRIGHT)
+    SevSeg[0].write_display()
+    SevSeg[1].set_brightness(BRIGHT)
+    SevSeg[1].write_display()
+    BRIGHT=BRIGHT-1
+    return BRIGHT
 #
 # ----------- test function -----------
 #
@@ -152,7 +170,7 @@ if __name__ == "__main__":
         SEVSEG[0].set_brightness(1)
         SEVSEG[0].print_hex('8888')
         SEVSEG[0].write_display()
-        SEVSEG[1].set_brightness(1)
+        SEVSEG[1].set_brightness(BRIGHT)
         SEVSEG[1].print_hex('8888')
         SEVSEG[1].write_display()
         time.sleep(.75)
@@ -187,6 +205,12 @@ if __name__ == "__main__":
         time.sleep(.75)
         if not ( update_displays( SEVSEG, heading1, heading2, heading3 )):
             print "Lost connection to display"
+
+        br = 1 
+        while br > 0:
+            br = set_bright(SEVSEG)
+            print "Brighness reduced to", br
+            time.sleep(.10)
 
    else:
         print "Primary LED display not detected"

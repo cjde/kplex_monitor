@@ -4,7 +4,14 @@
 # 
 
 
-usage() { echo "Usage: $0 [-w  <wait this long before sending data >] [-f <input file of nema seneences>] [-i < time interval between sending sentencses> ]" 1>&2; exit 1; }
+usage() { 
+    echo "Usage: $0 "
+    echo "   [-w  <wait this long before sending data >]"
+    echo "   [-f <input file of nema seneences>]"
+    echo "   [-i < time interval between sending sentencses> ]" 
+    echo "   [-m < append a ^M to the NMEA sentence( usefull when readingthe logged data )> ]" 
+    exit 1
+}
 
 
 # Default wait time to start sending data 

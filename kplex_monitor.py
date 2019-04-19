@@ -152,6 +152,11 @@ def set_error_status( stat, pins):
             GPIO.output(pins[3], state)
         time.sleep(.50)
         state = not state
+
+        # on a brown out try a lower power setting  
+        if stat == 3:
+            set_bright(SEVSEG)
+            break 
  
 
 #----- MAIN -----
@@ -292,7 +297,7 @@ def main(argv):
 
                     # check if the new heading is the result of a tack, and reset the track if it is
                     if h.tack_check( track, TACKANGLE ):
-                        print "Tacked from ", int(round(track))," to ",  int(round(heading))
+                        print "Tacked from ", int(round(heading))," to ",  int(round(track))
 
                         # indicate on the display when we reset the track
                         if not ( update_displays(SEVSEG,
